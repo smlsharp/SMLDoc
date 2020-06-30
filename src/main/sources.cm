@@ -8,9 +8,9 @@ Group is
 	$/basis.cm
 #endif
 
-	../../../smlnj-lib/Util/smlnj-lib.cm
-	../../../mlyacc/lib/ml-yacc-lib.cm
-	../../../SMLFormat/smlformatlib.cm
+	$/smlnj-lib.cm
+	$/ml-yacc-lib.cm
+	$/smlformatlib.cm
 
 	Utility.sml
 	PATH_UTILITY.sig
@@ -24,13 +24,11 @@ Group is
 	ASTUTIL.sig
 	AstUtil.sml
 	DocComment.sml
-	ML.grm.sig
-	ML.grm.sml
+	ML.grm
 	TokenTable.sml
-	ML.lex.sml
-	ParamPattern.grm.sig
-	ParamPattern.grm.sml
-	ParamPattern.lex.sml
+	ML.lex
+	ParamPattern.grm
+	ParamPattern.lex
 	AnnotatedAst.sml
 
 	EASY_HTML_PARSER.sig
@@ -51,9 +49,8 @@ Group is
 	DependencyAnalyzer.sml
 
 	LinkFile.sml
-	LinkFile.grm.sig
-	LinkFile.grm.sml
-	LinkFile.lex.sml
+	LinkFile.grm
+	LinkFile.lex
 	EXTERNALREF_LINKER.sig
 	ExternalRefLinker.sml
 
@@ -73,9 +70,8 @@ Group is
 	GetOpt.sml
 
 	smlnjcm/CMSemantic.sml
-	smlnjcm/CM.grm.sig
-	smlnjcm/CM.grm.sml
-	smlnjcm/CM.lex.sml
+	smlnjcm/CM.grm
+	smlnjcm/CM.lex
 	smlnjcm/FileID.sml
 	smlnjcm/SourcePath.sml
 	smlnjcm/CMFILE_PARSER.sig
