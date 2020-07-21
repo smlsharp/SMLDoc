@@ -5,3 +5,5 @@
 *.grm.desc
 # mllex
 *.lex.sml
+# executable
+bin/smldoc*
