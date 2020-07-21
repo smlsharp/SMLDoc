@@ -49,6 +49,26 @@ $ bin/heap2exec-fix -32 bin/smldoc.x86-linux bin/smldoc
 ```
 
 
+### Test
+
+Performs unit tests by loading `src/test/sources.cm`.
+
+```
+- CM.make "src/test/sources.cm";
+[autoloading]
+.
+.
+[New bindings added.]
+val it = true : bool
+- TestMain.test();
+............................
+tests = 28, failures = 0, errors = 0
+Failures:
+Errors:
+val it = () : unit
+```
+
+
 ## License
 
 This software has been developed as a part of the SML# project.
