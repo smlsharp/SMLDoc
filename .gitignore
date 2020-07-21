@@ -1,1 +1,7 @@
 .cm/
+# mlyacc
+*.grm.sig
+*.grm.sml
+*.grm.desc
+# mllex
+*.lex.sml
