@@ -69,6 +69,21 @@ val it = () : unit
 ```
 
 
+### Example
+
+An documentation example project is contained in `./example/SMLBasis`.
+This project provides Basis library documents of an old version of SML/NJ.
+
+This command:
+
+```
+$ cd example/SMLBasis/src
+example/SMLBasis/src $ ../../../bin/smldoc -a SMLDocOptions.txt
+```
+
+generates html documents to `example/SMLBasis/doc/api`.
+
+
 ## License
 
 This software has been developed as a part of the SML# project.
