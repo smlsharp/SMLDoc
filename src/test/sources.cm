@@ -1,11 +1,11 @@
 Group is
-        $/basis.cm
+    $/basis.cm
 
-        ../main/sources.cm
-        ../../../SMLUnit/smlunitlib.cm
+    ../main/sources.cm
+    $/smlunit-lib.cm
 
-        DependencyGraphTest0001.sml
-        EasyHTMLParserTest0001.sml
+    DependencyGraphTest0001.sml
+    EasyHTMLParserTest0001.sml
 
-        SMLDocTest.sml
-        TestMain.sml
+    SMLDocTest.sml
+    TestMain.sml
