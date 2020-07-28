@@ -1,4 +1,5 @@
 .cm/
+*.mlb.d
 # mlyacc
 *.grm.sig
 *.grm.sml
