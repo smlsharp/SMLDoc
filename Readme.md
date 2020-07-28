@@ -25,6 +25,10 @@ Initially, contents of this repository is salvaged from the official SMLDoc dist
 
     Tested 110.98
 
+* MLton
+
+    Tested 20130715
+
 
 ## SML/NJ
 
@@ -83,6 +87,33 @@ example/SMLBasis/src $ ../../../bin/smldoc -a SMLDocOptions.txt
 ```
 
 generates html documents to `example/SMLBasis/doc/api`.
+
+
+## MLton
+
+### Build smldoc
+
+To build project, use `Makefile.mlton`.
+This project depends on [SMLFormat], so mlb mapping file which contains the path to it as `SMLFORMAT_LIB` is required.
+The mlb mapping file is to be specified as `MLB_PATH_MAP`.
+
+```
+$ cat MLB_PATH_MAP
+SMLFORMAT_LIB <path/to/smlformat>
+$ make -f Makefile.mlton MLB_PATH_MAP=<path/to/mlb-path-map> smldoc
+```
+
+By above command, `bin/smldoc` will be generated.
+
+
+### Test
+
+`Makefile.mlton` also provides `test` target.
+You can run unit tests with a straightforward command:
+
+```
+$ make -f Makefile.mlton MLB_PATH_MAP=<path/to/mlb-path-map> test
+```
 
 
 ## License
