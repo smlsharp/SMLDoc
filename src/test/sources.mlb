@@ -1,0 +1,8 @@
+$(SML_LIB)/basis/basis.mlb
+$(SMLUNIT_LIB)/smlunitlib.mlb
+../main/sources.mlb
+DependencyGraphTest0001.sml
+EasyHTMLParserTest0001.sml
+SMLDocTest.sml
+TestMain.sml
+call-main.sml

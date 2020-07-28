@@ -1,0 +1,85 @@
+
+MLTON        := mlton
+MLB_PATH_MAP :=
+MLTON_FLAGS  := -default-ann "nonexhaustiveMatch ignore"
+
+ifneq ($(MLB_PATH_MAP),)
+MLTON_FLAGS  += -mlb-path-map $(MLB_PATH_MAP)
+endif
+
+MLLEX        := mllex
+MLYACC       := mlyacc
+
+PREFIX       := /usr/local/mlton
+
+SMLDOC_MLB         := src/mlton/smldoc.mlb
+SMLDOC_TEST_MLB    := src/test/sources.mlb
+SMLDOC_MLBS        := $(SMLDOC_MLB) \
+                      $(SMLDOC_TEST_MLB)
+
+SMLDOC             := bin/smldoc
+
+
+all: smldoc test
+
+
+$(SMLDOC_MLB:.mlb=) $(SMLDOC_TEST_MLB:.mlb=): %: %.mlb
+	@echo "  [MLTON] $@"
+	@$(MLTON) $(MLTON_FLAGS) -output $@ $<
+
+
+.PHONY: smldoc
+smldoc: $(SMLDOC)
+
+
+$(SMLDOC): $(SMLDOC_MLB:.mlb=)
+	@echo "  [CP] $@"
+	@cp $< $@
+
+
+%.mlb.d: %.mlb
+	@echo "  [GEN] $@"
+	@$(SHELL) -ec '$(MLTON) $(MLTON_FLAGS) -stop f $< \
+		| sed -e "1i$(<:.mlb=) $@:\\\\" -e "s|.*|  & \\\\|" -e "\$$s| \\\\||" > $@; \
+		[ -s $@ ] || rm -rf $@'
+
+
+%.lex.sml: %.lex
+	@echo "  [MLLEX] $<"
+	@$(MLLEX) $<
+
+
+%.grm.sml %.grm.sig %.grm.desc: %.grm
+	@echo "  [MLYACC] $<"
+	@$(MLYACC) $<
+
+
+.PHONY: test
+test: $(SMLDOC_TEST_MLB:.mlb=)
+	$(SMLDOC_TEST_MLB:.mlb=)
+
+
+ifeq ($(findstring clean,$(MAKECMDGOALS)),)
+include $(SMLDOC_MLBS:.mlb=.mlb.d)
+endif
+
+
+.PHONY: install
+install:
+	install -D -m 0755 -t $(PREFIX)/bin $(SMLDOC)
+
+
+.PHONY: clean
+clean:
+	-$(RM) $(SMLDOC_MLBS:.mlb=)
+	-$(RM) $(SMLDOC_MLBS:.mlb=.mlb.d)
+	-$(RM) $(SMLDOC)
+	-$(RM) src/main/ML.grm.*
+	-$(RM) src/main/ML.lex.sml
+	-$(RM) src/main/ParamPattern.grm.*
+	-$(RM) src/main/ParamPattern.lex.sml
+	-$(RM) src/main/LinkFile.grm.*
+	-$(RM) src/main/LinkFile.lex.sml
+	-$(RM) src/main/smlnjcm/CM.grm.*
+	-$(RM) src/main/smlnjcm/CM.lex.sml
+
