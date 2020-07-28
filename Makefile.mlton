@@ -59,6 +59,14 @@ test: $(SMLDOC_TEST_MLB:.mlb=)
 	$(SMLDOC_TEST_MLB:.mlb=)
 
 
+.PHONY: example
+example: $(SMLDOC)
+	[ ! -e example/SMLBasis/doc     ] && mkdir example/SMLBasis/doc
+	[ ! -e example/SMLBasis/doc/api ] && mkdir example/SMLBasis/doc/api
+	cd ./example/SMLBasis/src && $(abspath $(SMLDOC)) -a SMLDocOptions.txt
+
+
+
 ifeq ($(findstring clean,$(MAKECMDGOALS)),)
 include $(SMLDOC_MLBS:.mlb=.mlb.d)
 endif
@@ -82,4 +90,5 @@ clean:
 	-$(RM) src/main/LinkFile.lex.sml
 	-$(RM) src/main/smlnjcm/CM.grm.*
 	-$(RM) src/main/smlnjcm/CM.lex.sml
+	-$(RM) -r example/SMLBasis/doc
 
