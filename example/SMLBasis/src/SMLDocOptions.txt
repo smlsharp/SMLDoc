@@ -28,6 +28,5 @@ To\ order,\ please\ visit\
 <a\ HREF="http://www.cup.org">www.cup.org</a>\ (North\ America)\ or\
 <a\ HREF="http://www.cup.cam.ac.uk">www.cup.cam.ac.uk</a>\ (outside\ North\ America).<br>\
 </table></p>
---linkoffline=./@../doc/api/module-list
 --linkoffline=./@./toplevelTypes-list
 --overview=./Overview.html
