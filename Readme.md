@@ -116,6 +116,18 @@ $ make -f Makefile.mlton MLB_PATH_MAP=<path/to/mlb-path-map> test
 ```
 
 
+### Example
+
+An documentation example project is contained in `./example/SMLBasis`.
+This project provides Basis library documents of an old version of SML/NJ.
+
+```
+$ make -f Makefile.mlton MLB_PATH_MAP=<path/to/mlb-path-map> example
+```
+
+generates html documents to `example/SMLBasis/doc/api`.
+
+
 ## License
 
 This software has been developed as a part of the SML# project.
