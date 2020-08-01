@@ -1,5 +1,5 @@
 $(SML_LIB)/basis/basis.mlb
-$(SMLUNIT_LIB)/smlunitlib.mlb
+$(SMLUNIT_LIB)/smlunit-lib.mlb
 ../main/sources.mlb
 DependencyGraphTest0001.sml
 EasyHTMLParserTest0001.sml
