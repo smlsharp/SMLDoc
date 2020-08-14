@@ -30,11 +30,11 @@ Initially, contents of this repository is salvaged from the official SMLDoc dist
 
 ### Build smldoc
 
-To build the documentation generator first build heap image by `ml-build` like below:
+To build the documentation generator, you have to build a heap image with `ml-build` like below:
 This must be done in 32bit mode, even if you use 64bit architecture host.
 
 ```sh
-$ ml-build -32 smldoc.cm Main.main bin/smldoc
+$ ml-build -32 src/main/sources.cm Main.main bin/smldoc
 .
 .
 [creating directory .cm/x86-unix]
@@ -42,9 +42,10 @@ $ ml-build -32 smldoc.cm Main.main bin/smldoc
 ```
 
 This command build a heap image named `smldoc.x86-linux`.
-Next it is needed to convert the image to an executable.
+The next step is convert the image to an executable.
 
 ```sh
+$ export SMLNJ_HOME=/path/to/smlnj
 $ bin/heap2exec-fix -32 bin/smldoc.x86-linux bin/smldoc
 ```
 
