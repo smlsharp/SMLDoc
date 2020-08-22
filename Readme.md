@@ -103,5 +103,5 @@ http://www.pllab.riec.tohoku.ac.jp/smlsharp/
 : 2010, Tohoku University.
 
 
-[SMLDoc]: https://www.pllab.riec.tohoku.ac.jp/smlsharp/ja/?cmd=view&p=SMLDoc&key=SMLDoc "SMLDoc"
+[SMLDoc]: https://www.pllab.riec.tohoku.ac.jp/smlsharp/ja/?SMLDoc "SMLDoc"
 
