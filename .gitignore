@@ -8,3 +8,4 @@
 *.lex.sml
 # executable
 bin/smldoc*
+example/SMLBasis/doc/
