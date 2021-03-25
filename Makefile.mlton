@@ -1,40 +1,50 @@
 
-MLTON        := mlton
-MLB_PATH_MAP :=
-MLTON_FLAGS  := -default-ann "nonexhaustiveMatch ignore"
+MLTON               := mlton
+MLTON_FLAGS         := -default-ann "nonexhaustiveMatch ignore"
 
+# path to the file `mlb-path-map`
 ifneq ($(MLB_PATH_MAP),)
-MLTON_FLAGS  += -mlb-path-map $(MLB_PATH_MAP)
+  MLTON_FLAGS       += -mlb-path-map $(MLB_PATH_MAP)
 endif
 
-MLLEX        := mllex
-MLYACC       := mlyacc
+MLLEX               := mllex
+MLYACC              := mlyacc
 
-PREFIX       := /usr/local/mlton
+PREFIX              := /usr/local/mlton
+LIBDIR              := lib/smldoc
+DOCDIR              := doc/api
+SMLDOC_ARGFILE      := src/smldoc.cfg
 
-SMLDOC_MLB         := src/mlton/smldoc.mlb
-SMLDOC_TEST_MLB    := src/test/sources.mlb
-SMLDOC_MLBS        := $(SMLDOC_MLB) \
-                      $(SMLDOC_TEST_MLB)
+BASIS_DOCDIR        := example/SMLBasis/doc/api
 
-SMLDOC             := bin/smldoc
+SMLDOC_MLB          := src/mlton/smldoc.mlb
+SMLDOC_TEST_MLB     := src/test/sources.mlb
+SMLDOC_MLBS         := $(SMLDOC_MLB) \
+                       $(SMLDOC_TEST_MLB)
+
+DEPENDS             := $(SMLDOC_MLBS:.mlb=.mlb.d)
+
+SMLDOC              := bin/smldoc
 
 
-all: smldoc test
+all: smldoc
+
+
+.PHONY: smldoc-nodoc
+smldoc-nodoc: $(SMLDOC)
+
+
+.PHONY: smldoc
+smldoc: smldoc-nodoc doc
+
+
+$(SMLDOC): $(SMLDOC_MLB:.mlb=)
+	@cp $< $@
 
 
 $(SMLDOC_MLB:.mlb=) $(SMLDOC_TEST_MLB:.mlb=): %: %.mlb
 	@echo "  [MLTON] $@"
 	@$(MLTON) $(MLTON_FLAGS) -output $@ $<
-
-
-.PHONY: smldoc
-smldoc: $(SMLDOC)
-
-
-$(SMLDOC): $(SMLDOC_MLB:.mlb=)
-	@echo "  [CP] $@"
-	@cp $< $@
 
 
 %.mlb.d: %.mlb
@@ -61,27 +71,73 @@ test: $(SMLDOC_TEST_MLB:.mlb=)
 
 .PHONY: example
 example: $(SMLDOC)
-	[ -e example/SMLBasis/doc     ] || mkdir example/SMLBasis/doc
-	[ -e example/SMLBasis/doc/api ] || mkdir example/SMLBasis/doc/api
+	@install -d example/SMLBasis/doc/api
 	cd ./example/SMLBasis/src && $(abspath $(SMLDOC)) -a SMLDocOptions.txt
 
 
-
 ifeq ($(findstring clean,$(MAKECMDGOALS)),)
-include $(SMLDOC_MLBS:.mlb=.mlb.d)
+  include $(DEPENDS)
 endif
 
 
+.PHONY: install-nodoc
+install-nodoc: smldoc-nodoc
+	@install -D -m 0755 -t $(PREFIX)/bin $(SMLDOC)
+	@install -d $(PREFIX)/$(LIBDIR)
+	@$(MLTON) $(MLTON_FLAGS) -stop f smldoc.mlb | \
+	while read file; do \
+		if expr $$(readlink -f $$file) : ^$$(pwd) >/dev/null; then \
+			cp --parents $$(realpath --relative-to=$$(pwd) $$file) $(PREFIX)/$(LIBDIR); \
+			echo -n . ; \
+		fi; \
+	done
+	@echo "Installation has been completed."
+	@echo ""
+	@echo "  $(PREFIX)/$(SMLDOC) "
+	@echo ""
+	@echo "Add the entry to your mlb path map file:"
+	@echo ""
+	@echo "  SMLDOC_LIB $(PREFIX)/$(LIBDIR)"
+	@echo ""
+
+
 .PHONY: install
-install:
-	install -D -m 0755 -t $(PREFIX)/bin $(SMLDOC)
+install: install-doc install-nodoc
+
+
+.PHONY: doc
+doc: basis-doc
+	@echo "  [SMLDoc]"
+	@$(RM) -r $(DOCDIR)
+	@install -d $(DOCDIR)
+	@$(SMLDOC) -c UTF-8 -a $(SMLDOC_ARGFILE) -d "$(DOCDIR)"
+
+
+.PHOYN: basis-doc
+basis-doc:
+	@echo "  [SMLDoc]"
+	@$(RM) -r $(BASIS_DOCDIR)
+	@install -d $(BASIS_DOCDIR)
+	cd example/SMLBasis/src && ../../../$(SMLDOC) -c UTF-8 -a SMLDocOptions.txt -d "$$(realpath --relative-to=. ../../../$(BASIS_DOCDIR))"
+
+
+.PHONY: install-doc
+install-doc: doc
+	@install -d $(PREFIX)/$(DOCDIR)
+	@cp -prT $(DOCDIR) $(PREFIX)/$(DOCDIR)
+	@echo "================================================================"
+	@echo "Generated API Documents of SMLUnit"
+	@echo "\t$(PREFIX)/$(DOCDIR)"
+	@echo "================================================================"
 
 
 .PHONY: clean
 clean:
 	-$(RM) $(SMLDOC_MLBS:.mlb=)
-	-$(RM) $(SMLDOC_MLBS:.mlb=.mlb.d)
+	-$(RM) $(DEPENDS)
 	-$(RM) $(SMLDOC)
+	-$(RM) -r $(DOCDIR)
+	-$(RM) -r $(BASIS_DOCDIR)
 	-$(RM) src/main/ML.grm.*
 	-$(RM) src/main/ML.lex.sml
 	-$(RM) src/main/ParamPattern.grm.*
@@ -90,5 +146,3 @@ clean:
 	-$(RM) src/main/LinkFile.lex.sml
 	-$(RM) src/main/smlnjcm/CM.grm.*
 	-$(RM) src/main/smlnjcm/CM.lex.sml
-	-$(RM) -r example/SMLBasis/doc
-
