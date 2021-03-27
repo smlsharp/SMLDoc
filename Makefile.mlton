@@ -11,11 +11,12 @@ MLLEX               := mllex
 MLYACC              := mlyacc
 
 PREFIX              := /usr/local/mlton
+BINDIR              := bin
 LIBDIR              := lib/smldoc
-DOCDIR              := doc/api
+DOCDIR              := doc/smldoc
 SMLDOC_ARGFILE      := src/smldoc.cfg
 
-BASIS_DOCDIR        := example/SMLBasis/doc/api
+BASIS_DOCDIR        := doc/SMLBasis
 
 SMLDOC_MLB          := src/mlton/smldoc.mlb
 SMLDOC_TEST_MLB     := src/test/sources.mlb
@@ -75,24 +76,8 @@ endif
 
 
 .PHONY: install-nodoc
-install-nodoc: smldoc-nodoc
-	@install -D -m 0755 -t $(PREFIX)/bin $(SMLDOC)
-	@install -d $(PREFIX)/$(LIBDIR)
-	@$(MLTON) $(MLTON_FLAGS) -stop f smldoc.mlb | \
-	while read file; do \
-		if expr $$(readlink -f $$file) : ^$$(pwd) >/dev/null; then \
-			cp --parents $$(realpath --relative-to=$$(pwd) $$file) $(PREFIX)/$(LIBDIR); \
-			echo -n . ; \
-		fi; \
-	done
-	@echo "Installation has been completed."
-	@echo ""
-	@echo "  $(PREFIX)/$(SMLDOC) "
-	@echo ""
-	@echo "Add the entry to your mlb path map file:"
-	@echo ""
-	@echo "  SMLDOC_LIB $(PREFIX)/$(LIBDIR)"
-	@echo ""
+install-nodoc: $(SMLDOC)
+	install -m 0755 -t $(PREFIX)/$(BINDIR) $(SMLDOC)
 
 
 .PHONY: install
@@ -101,27 +86,33 @@ install: install-doc install-nodoc
 
 .PHONY: doc
 doc: example
-	@echo "  [SMLDoc]"
+	@echo "  [SMLDoc] $(DOCDIR)"
 	@$(RM) -r $(DOCDIR)
 	@install -d $(DOCDIR)
+	@install -d doc/api
 	@$(SMLDOC) -c UTF-8 -a $(SMLDOC_ARGFILE) -d "$(DOCDIR)"
 
 
 # Generate the 'Basis' documentation
 .PHONY: example
 example: $(SMLDOC)
+	@echo "  [SMLDoc] $(BASIS_DOCDIR)"
 	@$(RM) -r $(BASIS_DOCDIR)
 	@install -d $(BASIS_DOCDIR)
-	@cd example/SMLBasis/src && ../../../$(SMLDOC) -c UTF-8 -a SMLDocOptions.txt -d "$$(realpath --relative-to=. ../../../$(BASIS_DOCDIR))"
+	@install -d example/SMLBasis/doc/api
+	@cd example/SMLBasis/src && ../../../$(SMLDOC) -c UTF-8 -d "$$(realpath --relative-to=. ../../../$(BASIS_DOCDIR))" -a SMLDocOptions.txt
 
 
 .PHONY: install-doc
 install-doc: doc
 	@install -d $(PREFIX)/$(DOCDIR)
 	@cp -prT $(DOCDIR) $(PREFIX)/$(DOCDIR)
+	@install -d $(PREFIX)/$(BASIS_DOCDIR)
+	@cp -prT $(BASIS_DOCDIR) $(PREFIX)/$(BASIS_DOCDIR)
 	@echo "================================================================"
-	@echo "Generated API Documents of SMLUnit"
+	@echo "Generated API Documents:"
 	@echo "\t$(PREFIX)/$(DOCDIR)"
+	@echo "\t$(PREFIX)/$(BASIS_DOCDIR)"
 	@echo "================================================================"
 
 
