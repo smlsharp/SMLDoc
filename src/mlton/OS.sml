@@ -10,7 +10,6 @@ struct
     open FileSys
     val readDir =
         fn stream => case readDir stream of NONE => "" | SOME name => name
-                                                                                end
+  end
 end
 
-        
