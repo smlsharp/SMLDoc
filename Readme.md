@@ -34,7 +34,7 @@ Initially, contents of this repository is salvaged from the official SMLDoc dist
 
 ### Build smldoc
 
-To build the documentation generator, you have to build a heap image with `ml-build` like below:
+To build the [SMLDoc], you have to build a heap image with `ml-build` like below:
 This must be done in 32bit mode, even if you use 64bit architecture host.
 
 ```sh
