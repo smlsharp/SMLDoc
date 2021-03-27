@@ -69,12 +69,6 @@ test: $(SMLDOC_TEST_MLB:.mlb=)
 	$(SMLDOC_TEST_MLB:.mlb=)
 
 
-.PHONY: example
-example: $(SMLDOC)
-	@install -d example/SMLBasis/doc/api
-	cd ./example/SMLBasis/src && $(abspath $(SMLDOC)) -a SMLDocOptions.txt
-
-
 ifeq ($(findstring clean,$(MAKECMDGOALS)),)
   include $(DEPENDS)
 endif
@@ -106,19 +100,19 @@ install: install-doc install-nodoc
 
 
 .PHONY: doc
-doc: basis-doc
+doc: example
 	@echo "  [SMLDoc]"
 	@$(RM) -r $(DOCDIR)
 	@install -d $(DOCDIR)
 	@$(SMLDOC) -c UTF-8 -a $(SMLDOC_ARGFILE) -d "$(DOCDIR)"
 
 
-.PHOYN: basis-doc
-basis-doc:
-	@echo "  [SMLDoc]"
+# Generate the 'Basis' documentation
+.PHONY: example
+example: $(SMLDOC)
 	@$(RM) -r $(BASIS_DOCDIR)
 	@install -d $(BASIS_DOCDIR)
-	cd example/SMLBasis/src && ../../../$(SMLDOC) -c UTF-8 -a SMLDocOptions.txt -d "$$(realpath --relative-to=. ../../../$(BASIS_DOCDIR))"
+	@cd example/SMLBasis/src && ../../../$(SMLDOC) -c UTF-8 -a SMLDocOptions.txt -d "$$(realpath --relative-to=. ../../../$(BASIS_DOCDIR))"
 
 
 .PHONY: install-doc
