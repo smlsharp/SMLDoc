@@ -93,7 +93,7 @@ generates html documents to `example/SMLBasis/doc/api`.
 
 ### Build smldoc
 
-To build project, use `Makefile.mlton`.
+To build project, run the target `smldoc` of `Makefile.mlton`.
 This project depends on [SMLFormat], so mlb mapping file which contains the path to it as `SMLFORMAT_LIB` is required.
 The mlb mapping file is to be specified as `MLB_PATH_MAP`.
 
@@ -103,13 +103,11 @@ SMLFORMAT_LIB <path/to/smlformat>
 $ make -f Makefile.mlton MLB_PATH_MAP=<path/to/mlb-path-map> smldoc
 ```
 
-By above command, `bin/smldoc` will be generated.
-
 
 ### Test
 
-`Makefile.mlton` also provides `test` target.
-You can run unit tests with a straightforward command:
+To run unit tests, run the `test` target.
+This target requires [SMLUnit].
 
 ```
 $ make -f Makefile.mlton MLB_PATH_MAP=<path/to/mlb-path-map> test
@@ -118,14 +116,13 @@ $ make -f Makefile.mlton MLB_PATH_MAP=<path/to/mlb-path-map> test
 
 ### Example
 
-An documentation example project is contained in `./example/SMLBasis`.
-This project provides Basis library documents of an old version of SML/NJ.
+To generate documentations, run the `example` target.
 
 ```
-$ make -f Makefile.mlton MLB_PATH_MAP=<path/to/mlb-path-map> example
+$ make -f Makefile.mlton example
 ```
 
-generates html documents to `example/SMLBasis/doc/api`.
+This target generates documentations of the Basis library into `./example/SMLBasis/doc/api`.
 
 
 ## License
@@ -146,5 +143,5 @@ http://www.pllab.riec.tohoku.ac.jp/smlsharp/
 : 2010, Tohoku University.
 
 
-[SMLDoc]: https://www.pllab.riec.tohoku.ac.jp/smlsharp/ja/?SMLDoc "SMLDoc"
+[SMLDoc]: https://www.pllab.riec.tohoku.ac.jp/smlsharp//?SMLDoc "SMLDoc"
 
