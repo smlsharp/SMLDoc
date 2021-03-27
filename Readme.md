@@ -30,6 +30,14 @@ Initially, contents of this repository is salvaged from the official SMLDoc dist
     Tested 20130715
 
 
+## Dependency
+
+This project depends on:
+
+- [SMLFormat][SMLFormat]
+- [SMLUnit][SMLUnit] for unit test
+
+
 ## SML/NJ
 
 ### Build smldoc
@@ -93,36 +101,41 @@ generates html documents to `example/SMLBasis/doc/api`.
 
 ### Build smldoc
 
-To build project, run the target `smldoc` of `Makefile.mlton`.
-This project depends on [SMLFormat], so mlb mapping file which contains the path to it as `SMLFORMAT_LIB` is required.
-The mlb mapping file is to be specified as `MLB_PATH_MAP`.
+To build [SMLDoc][SMLDoc], run the target `smldoc` of `Makefile.mlton`.
+This project depends on [SMLFormat][SMLFormat] which is referenced as `SMLFORMAT_LIB`.
 
 ```
-$ cat MLB_PATH_MAP
-SMLFORMAT_LIB <path/to/smlformat>
-$ make -f Makefile.mlton MLB_PATH_MAP=<path/to/mlb-path-map> smldoc
+$ export MLB_PATH_MAP=/path/to/mlb-path-map
+$ make -f Makefile.mlton smldoc
+```
+
+The target `smldoc` generates documentation of SMLDoc using [SMLDoc][SMLDoc] itself.
+If you do not need to generate documentation, run the `smldoc-nodoc` target.
+
+```sh
+$ make -f Makefile.smlnj smldoc-nodoc
 ```
 
 
 ### Test
 
 To run unit tests, run the `test` target.
-This target requires [SMLUnit].
+This target requires [SMLUnit][SMLUnit] which is referenced as `SMLUNIT_LIB`.
 
 ```
-$ make -f Makefile.mlton MLB_PATH_MAP=<path/to/mlb-path-map> test
+$ export MLB_PATH_MAP=path/to/mlb-path-map
+$ make -f Makefile.mlton test
 ```
 
 
 ### Example
 
-To generate documentations, run the `example` target.
+To generate documentations of the Basis library, run the `example` target.
+This target generates documentations to `doc/SMLBasis`.
 
 ```
 $ make -f Makefile.mlton example
 ```
-
-This target generates documentations of the Basis library into `./example/SMLBasis/doc/api`.
 
 
 ## License
@@ -144,4 +157,8 @@ http://www.pllab.riec.tohoku.ac.jp/smlsharp/
 
 
 [SMLDoc]: https://www.pllab.riec.tohoku.ac.jp/smlsharp//?SMLDoc "SMLDoc"
+
+[SMLFormat]: https://www.pllab.riec.tohoku.ac.jp/smlsharp//?SMLFormat "SMLFormat"
+
+[SMLUnit]: https://github.com/smlsharp/SMLUnit "SMLUnit"
 
