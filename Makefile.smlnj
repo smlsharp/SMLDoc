@@ -1,0 +1,161 @@
+
+SML             := sml
+# -32 or -64
+# empty is default
+SML_BITMODE     :=
+SML_FLAGS       :=
+HEAP_SUFFIX     := $(shell $(SML) $(SML_BITMODE) @SMLsuffix)
+
+# directory of CM product
+CM_SUFFIX       := $(shell $(SML) $(SML_BITMODE) < script/suffix.sml 2>&1 >/dev/null)
+
+MLBUILD         := ml-build
+MLBUILD_FLAGS   :=
+
+MLDEPENDS       := ml-makedepend
+MLDEPENDS_FLAGS := -n
+
+# for profiling, set '-DMEASURE'
+SML_DULIST      :=
+
+PREFIX          := /usr/local/sml
+BINDIR          := bin
+LIBDIR          := lib/smldoc.cm
+DOCDIR          := doc/smldoc
+HEAPDIR         := $(BINDIR)/.heap
+SMLDOC_ARGFILE  := src/smldoc.cfg
+
+BASIS_DOCDIR    := doc/SMLBasis
+
+DEPENDS         := src/main/sources.d src/test/sources.d
+
+TEST_TARGET     := $(BINDIR)/SMLDocTest.$(HEAP_SUFFIX)
+
+SMLDOC          := $(BINDIR)/smldoc
+SMLDOC_IMAGE    := $(HEAPDIR)/smldoc.$(HEAP_SUFFIX)
+
+
+define mldepends
+	@echo "  [GEN] $@"
+	@touch $@
+	@$(MLDEPENDS) $(MLDEPENDS_FLAGS) $(SML_BITMODE) $(SML_DULIST) -f $@ $< $(1)
+	@sed -i -e "s|^\([^#][^:]\+\):|\1 $@:|" $@
+endef
+
+
+all: smldoc
+
+
+.PHONY: smldoc-nodoc
+smldoc-nodoc: $(SMLDOC)
+
+
+.PHONY: smldoc
+smldoc: smldoc-nodoc doc
+
+
+$(SMLDOC): $(SMLDOC_IMAGE)
+	sed \
+		-e "s|@SML@|$(SML)|" \
+		-e "s|@SML_FLAGS@|$(SML_BITMODE) $(SML_FLAGS)|" \
+		-e "s|@HEAP_IMAGE@|$(basename $<)|" \
+		script/smldoc.in > $@
+	chmod +x $@
+
+
+$(SMLDOC_IMAGE): src/main/sources.cm
+	@echo "  [SMLNJ] $@"
+	@install -d $(dir $(SMLDOC_IMAGE))
+	@$(MLBUILD) $(SML_BITMODE) $(SML_DULIST) $(MLBUILD_FLAGS) $< Main.main $@
+
+
+# .cm/$(CM_SUFFIX)/%.cm: %.cm
+# 	@echo "  [SMLNJ] $@"
+# 	@echo 'CM.stabilize true "smldoc.cm";' | $(SML) $(SML_BITMODE) $(SML_DULIST)
+
+
+src/main/sources.d: %.d: %.cm
+	$(call mldepends,$(SMLDOC_IMAGE))
+
+
+src/test/sources.d: %.d: %.cm
+	$(call mldepends,$(dir $<).cm/$(CM_SUFFIX))
+
+
+ifeq (,$(findstring clean,$(MAKECMDGOALS)))
+  include $(DEPENDS)
+endif
+
+
+.PHONY: install-nodoc
+install-nodoc: $(SMLDOC)
+	install -D -m 0755 -t $(PREFIX)/$(BINDIR) $(SMLDOC)
+
+
+.PHONY: install
+install: install-doc install-nodoc
+
+
+.PHONY: doc
+doc: example
+	@echo "  [SMLDoc] $(DOCDIR)"
+	@$(RM) -r $(DOCDIR)
+	@install -d $(DOCDIR)
+	@install -d doc/api
+	@$(SMLDOC) -c UTF-8 -a $(SMLDOC_ARGFILE) -d "$(DOCDIR)"
+
+
+# Generate the 'Basis' documentation
+.PHONY: example
+example: $(SMLDOC)
+	@echo "  [SMLDoc] $(BASIS_DOCDIR)"
+	@$(RM) -r $(BASIS_DOCDIR)
+	@install -d $(BASIS_DOCDIR)
+	@install -d example/SMLBasis/doc/api
+	@cd example/SMLBasis/src && ../../../$(SMLDOC) -c UTF-8 -d "$$(realpath --relative-to=. ../../../$(BASIS_DOCDIR))" -a SMLDocOptions.txt
+
+
+.PHONY: install-doc
+install-doc: doc
+	@install -d $(PREFIX)/$(DOCDIR)
+	@cp -prT $(DOCDIR) $(PREFIX)/$(DOCDIR)
+	@install -d $(PREFIX)/$(BASIS_DOCDIR)
+	@cp -prT $(BASIS_DOCDIR) $(PREFIX)/$(BASIS_DOCDIR)
+	@echo "================================================================"
+	@echo "Generated API Documents:"
+	@echo "\t$(PREFIX)/$(DOCDIR)"
+	@echo "\t$(PREFIX)/$(BASIS_DOCDIR)"
+	@echo "================================================================"
+
+
+$(TEST_TARGET): src/test/.cm/$(CM_SUFFIX)
+	@install -d $(dir $@)
+	$(MLBUILD) $(SML_BITMODE) $(SML_DULIST) $(MLBUILD_FLAGS) $(patsubst %/.cm/$(CM_SUFFIX),%/sources.cm,$<) TestMain.main $@
+
+
+.PHONY: test
+test: $(TEST_TARGET)
+	$(SML) $(SML_BITMODE) $(SML_DULIST) $(SML_FLAGS) @SMLload=$<
+
+
+.PHONY: clean
+clean:
+	-$(RM) $(DEPENDS)
+	-$(RM) $(SMLDOC)
+	-$(RM) -r $(HEAPDIR)
+	-$(RM) -r $(DOCDIR)
+	-$(RM) -r $(BASIS_DOCDIR)
+	-$(RM) $(TEST_TARGET)
+	-$(RM) -r .cm
+	-$(RM) -r src/main/.cm
+	-$(RM) -r src/test/.cm
+	-$(RM) -r src/main/smlnjcm/.cm
+	-$(RM) -r src/main/HTML/.cm
+	-$(RM) src/main/ML.grm.*
+	-$(RM) src/main/ML.lex.sml
+	-$(RM) src/main/ParamPattern.grm.*
+	-$(RM) src/main/ParamPattern.lex.sml
+	-$(RM) src/main/LinkFile.grm.*
+	-$(RM) src/main/LinkFile.lex.sml
+	-$(RM) src/main/smlnjcm/CM.grm.*
+	-$(RM) src/main/smlnjcm/CM.lex.sml

@@ -10,4 +10,7 @@ struct
       in SMLUnit.TextUITestRunner.runTest {output = TextIO.stdOut} tests
       end
 
+  fun main (name, args) =
+    (test (); OS.Process.exit OS.Process.success)
+
 end

@@ -1,4 +1,6 @@
 .cm/
+bin/
+*.d
 *.mlb.d
 # mlyacc
 *.grm.sig
