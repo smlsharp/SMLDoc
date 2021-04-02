@@ -58,7 +58,7 @@ $(SMLDOC): $(SMLDOC_IMAGE)
 	sed \
 		-e "s|@SML@|$(SML)|" \
 		-e "s|@SML_FLAGS@|$(SML_BITMODE) $(SML_FLAGS)|" \
-		-e "s|@HEAP_IMAGE@|$(basename $<)|" \
+		-e "s|@HEAP_IMAGE@|$<|" \
 		script/smldoc.in > $@
 	chmod +x $@
 

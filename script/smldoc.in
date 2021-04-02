@@ -1,13 +1,12 @@
 #!/bin/sh
-set -eux
+set -u
 
-CMDDIR=$(dirname "$0")
+CMDDIR=$(cd $(dirname "$0") && pwd)
 
 SML="@SML@"
 SML_FLAGS="@SML_FLAGS@"
 HEAP_IMAGE="@HEAP_IMAGE@"
 
-HEAP_IMAGE=$(realpath --relative-to=${CMDDIR} ${HEAP_IMAGE})
+HEAP_IMAGE=$(cd ${CMDDIR}/.. && realpath ${HEAP_IMAGE})
 
-cd $CMDDIR
 exec ${SML} ${SML_FLAGS} @SMLcmdname=smldoc @SMLload=${HEAP_IMAGE} "$@"
