@@ -34,8 +34,8 @@ Initially, contents of this repository is salvaged from the official SMLDoc dist
 
 This project depends on:
 
-- [SMLFormat][SMLFormat]
-- [SMLUnit][SMLUnit] for unit test
+- [SMLFormat]
+- [SMLUnit] for unit test
 
 
 ## SML/NJ
@@ -101,15 +101,15 @@ generates html documents to `example/SMLBasis/doc/api`.
 
 ### Build smldoc
 
-To build [SMLDoc][SMLDoc], run the target `smldoc` of `Makefile.mlton`.
-This project depends on [SMLFormat][SMLFormat] which is referenced as `SMLFORMAT_LIB`.
+To build [SMLDoc], run the target `smldoc` of `Makefile.mlton`.
+This project depends on [SMLFormat] which is referenced as `SMLFORMAT_LIB`.
 
 ```
 $ export MLB_PATH_MAP=/path/to/mlb-path-map
 $ make -f Makefile.mlton smldoc
 ```
 
-The target `smldoc` generates documentation of SMLDoc using [SMLDoc][SMLDoc] itself.
+The target `smldoc` generates documentation of SMLDoc using [SMLDoc] itself.
 If you do not need to generate documentation, run the `smldoc-nodoc` target.
 
 ```sh
@@ -120,7 +120,7 @@ $ make -f Makefile.smlnj smldoc-nodoc
 ### Test
 
 To run unit tests, run the `test` target.
-This target requires [SMLUnit][SMLUnit] which is referenced as `SMLUNIT_LIB`.
+This target requires [SMLUnit] which is referenced as `SMLUNIT_LIB`.
 
 ```
 $ export MLB_PATH_MAP=path/to/mlb-path-map
