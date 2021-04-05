@@ -58,6 +58,8 @@ To install `smldoc`, run the `install` target.
 $ make -f Makefile.smlnj install [PREFIX=/path/to/install]
 ```
 
+This target install the command `smldoc` to `$PREFIX/bin/smldoc`.
+
 
 ### Test
 
@@ -82,22 +84,26 @@ $ make -f Makefile.smlnj smldoc-doc
 
 ## MLton
 
-### Build smldoc
+### Build
 
-To build [SMLDoc], run the target `smldoc` of `Makefile.mlton`.
-This project depends on [SMLFormat] which is referenced as `SMLFORMAT_LIB`.
+To build the [SMLDoc], run the `smldoc` target of `Makefile.mlton`.
+This target requires [SMLFormat] which is referenced as `SMLFORMAT_LIB`.
 
 ```
 $ export MLB_PATH_MAP=/path/to/mlb-path-map
 $ make -f Makefile.mlton smldoc
 ```
 
-The target `smldoc` generates documentation of SMLDoc using [SMLDoc] itself.
-If you do not need to generate documentation, run the `smldoc-nodoc` target.
+
+### Install
+
+To install `smldoc`, run the `install` target.
 
 ```sh
-$ make -f Makefile.smlnj smldoc-nodoc
+$ make -f Makefile.mlton install [PREFIX=/path/to/install]
 ```
+
+This target install the command `smldoc` to `$PREFIX/bin/smldoc`.
 
 
 ### Test
@@ -113,11 +119,12 @@ $ make -f Makefile.mlton test
 
 ### Example
 
-To generate documentations of the Basis library, run the `example` target.
-This target generates documentations to `doc/SMLBasis`.
+The `example` target generates documentation of SMLBasis library to `doc/SMLBasis`.
+And the `smldoc-doc` target generates documentations of [SMLDoc] itself to `doc/smldoc` which depends on the `SMLBasis` documentation.
 
 ```
 $ make -f Makefile.mlton example
+$ make -f Makefile.mlton smldoc-doc
 ```
 
 
