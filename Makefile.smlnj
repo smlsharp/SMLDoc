@@ -46,12 +46,8 @@ endef
 all: smldoc
 
 
-.PHONY: smldoc-nodoc
-smldoc-nodoc: $(SMLDOC)
-
-
 .PHONY: smldoc
-smldoc: smldoc-nodoc doc
+smldoc: $(SMLDOC)
 
 
 $(SMLDOC): $(SMLDOC_IMAGE)
@@ -87,27 +83,24 @@ ifeq (,$(findstring clean,$(MAKECMDGOALS)))
 endif
 
 
-.PHONY: install-nodoc
-install-nodoc: $(SMLDOC)
-	install -D -m 0755 -t $(PREFIX)/$(BINDIR) $(SMLDOC)
-
-
 .PHONY: install
-install: install-doc install-nodoc
+install: $(SMLDOC)
+	install -D -m 0755 -t $(PREFIX)/$(BINDIR) $(SMLDOC)
+	install -D -m 0755 -t $(PREFIX)/$(HEAPDIR) $(SMLDOC_IMAGE)
 
 
-.PHONY: doc
-doc: example
+# Generate the 'SMLDoc' documentation
+.PHONY: smldoc-doc
+smldoc-doc: $(SMLDOC) basis-doc
 	@echo "  [SMLDoc] $(DOCDIR)"
 	@$(RM) -r $(DOCDIR)
 	@install -d $(DOCDIR)
-	@install -d doc/api
 	@$(SMLDOC) -c UTF-8 -a $(SMLDOC_ARGFILE) -d "$(DOCDIR)"
 
 
 # Generate the 'Basis' documentation
-.PHONY: example
-example: $(SMLDOC)
+.PHONY: basis-doc
+basis-doc: $(SMLDOC)
 	@echo "  [SMLDoc] $(BASIS_DOCDIR)"
 	@$(RM) -r $(BASIS_DOCDIR)
 	@install -d $(BASIS_DOCDIR)
@@ -115,17 +108,8 @@ example: $(SMLDOC)
 	@cd example/SMLBasis/src && ../../../$(SMLDOC) -c UTF-8 -d "$$(realpath --relative-to=. ../../../$(BASIS_DOCDIR))" -a SMLDocOptions.txt
 
 
-.PHONY: install-doc
-install-doc: doc
-	@install -d $(PREFIX)/$(DOCDIR)
-	@cp -prT $(DOCDIR) $(PREFIX)/$(DOCDIR)
-	@install -d $(PREFIX)/$(BASIS_DOCDIR)
-	@cp -prT $(BASIS_DOCDIR) $(PREFIX)/$(BASIS_DOCDIR)
-	@echo "================================================================"
-	@echo "Generated API Documents:"
-	@echo "\t$(PREFIX)/$(DOCDIR)"
-	@echo "\t$(PREFIX)/$(BASIS_DOCDIR)"
-	@echo "================================================================"
+.PHONY: example
+example: basis-doc
 
 
 $(TEST_TARGET): src/test/.cm/$(CM_SUFFIX)

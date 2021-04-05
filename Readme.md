@@ -40,61 +40,44 @@ This project depends on:
 
 ## SML/NJ
 
-### Build smldoc
+### Build
 
-To build the [SMLDoc], you have to build a heap image with `ml-build` like below:
-This must be done in 32bit mode, even if you use 64bit architecture host.
+To build the [SMLDoc], run the `smldoc` target.
+This target requires [SMLFormat] which is referenced as `$/smlformatlib.cm`.
 
 ```sh
-$ ml-build -32 src/main/sources.cm Main.main bin/smldoc
-.
-.
-[creating directory .cm/x86-unix]
-[code: 325, data: 69, env: 39 bytes]
+$ make -f Makefile.smlnj smldoc
 ```
 
-This command build a heap image named `smldoc.x86-linux`.
-The next step is convert the image to an executable.
+
+### Install
+
+To install `smldoc`, run the `install` target.
 
 ```sh
-$ export SMLNJ_HOME=/path/to/smlnj
-$ bin/heap2exec-fix -32 bin/smldoc.x86-linux bin/smldoc
+$ make -f Makefile.smlnj install [PREFIX=/path/to/install]
 ```
 
 
 ### Test
 
-Performs unit tests by loading `src/test/sources.cm`.
+To run unit tests, run the `test` target.
+This target requires [SMLUnit] which is referenced as `SMLUNIT_LIB`.
 
-```
-- CM.make "src/test/sources.cm";
-[autoloading]
-.
-.
-[New bindings added.]
-val it = true : bool
-- TestMain.test();
-............................
-tests = 28, failures = 0, errors = 0
-Failures:
-Errors:
-val it = () : unit
+```sh
+$ make -f Makefile.smlnj test
 ```
 
 
 ### Example
 
-An documentation example project is contained in `./example/SMLBasis`.
-This project provides Basis library documents of an old version of SML/NJ.
-
-This command:
+The `example` target generates documentation of SMLBasis library to `doc/SMLBasis`.
+And the `smldoc-doc` target generates documentations of [SMLDoc] itself to `doc/smldoc` which depends on the `SMLBasis` documentation.
 
 ```
-$ cd example/SMLBasis/src
-example/SMLBasis/src $ ../../../bin/smldoc -a SMLDocOptions.txt
+$ make -f Makefile.smlnj example
+$ make -f Makefile.smlnj smldoc-doc
 ```
-
-generates html documents to `example/SMLBasis/doc/api`.
 
 
 ## MLton
