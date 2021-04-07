@@ -85,6 +85,7 @@ basis-doc: $(SMLDOC)
 	@echo "  [SMLDoc] $(BASIS_DOCDIR)"
 	@$(RM) -r $(BASIS_DOCDIR)
 	@install -d $(BASIS_DOCDIR)
+	@install -d example/SMLBasis/doc/api
 	@cd example/SMLBasis/src && ../../../$(SMLDOC) -c UTF-8 -d "$$(realpath --relative-to=. ../../../$(BASIS_DOCDIR))" -a SMLDocOptions.txt
 
 

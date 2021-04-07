@@ -10,8 +10,9 @@ bin/
 *.lex.sml
 # executable
 bin/smldoc*
+src/mlton/smldoc
+src/test/sources
 # doc
 doc/smldoc/
 doc/SMLBasis/
-doc/doc/
 example/SMLBasis/doc/
